@@ -48,7 +48,7 @@ function DecodeSchema (schema) {
 
 export class Repository {
   constructor () {
-    this.database = new Database()
+    //this.database = new Database()
     // firebase resolver for json-schema-ref-parser
     this.firebaseResolver = {
       order: 1,

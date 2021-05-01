@@ -1,6 +1,6 @@
 <template xmlns:v-on="">
   <div class="json-schema-editor">
-    <div class="container" :style="containerStyle">
+    <div class="container">
       <split-panel ref="splitPanel" orientation="vertical" :show-border="false" :init-position="180">
         <split-panel orientation="horizontal" :show-border="false" :init-position="400" slot="panel1">
           <div class="panel" slot="panel1">
@@ -22,7 +22,7 @@
                 ></toolbox>
               </div>
               <div class="user-schemas__buttons-container">
-                <md-button
+                <!-- <md-button
                   class="md-dense user-schemas__button"
                   :disabled="!signIn"
                   @click.native="saveSchema"
@@ -41,7 +41,7 @@
                   class="md-dense user-schemas__button"
                   :disabled="!signIn"
                   @click.native="importSchema"
-                >Import Schema</md-button>
+                >Import Schema</md-button> -->
               </div>
             </div>
           </div>
@@ -77,10 +77,10 @@
                 </div>
                 <div class="json-schema-content__buttons-container">
                   <div class="json-schema-content__button-bar">
-                    <md-button
+                    <!-- <md-button
                       class="md-dense json-schema-content__button"
                       @click.native="newSchema"
-                    >New Schema</md-button>
+                    >New Schema</md-button> -->
                     <md-button
                       class="md-dense json-schema-content__button"
                       :disabled="undoDisabled"
@@ -90,14 +90,14 @@
                       class="md-dense json-schema-content__button"
                       :disabled="redoDisabled"
                       @click.native="redo"
-                    >Redo</md-button>
-                  </div>
-                  <div class="json-schema-content__button-bar">
-                    <md-button
+                    >Redo</md-button><md-button
                       class="md-dense json-schema-content__button"
                       @click.native="copyJsonSchemaToClipboard"
                     >Copy to Clipboard</md-button>
-                    <md-button
+                  </div>
+                  <div class="json-schema-content__button-bar">
+                    
+                    <!-- <md-button
                       class="md-dense json-schema-content__button"
                       @click.native="downloadJsonSchemaToFile"
                     >Download to File</md-button>
@@ -110,7 +110,7 @@
                     <md-button
                       class="md-dense json-schema-content__button"
                       @click.native="loadJsonSchemaFromFile"
-                    >Load from File</md-button>
+                    >Load from File</md-button> -->
                   </div>
                 </div>
               </div>
@@ -219,17 +219,6 @@ var clipboard = {}
 export default {
   name: 'JsonSchemaEditor',
   created () {
-    this.setContainerHeight()
-    // register window resize event handler
-    window.addEventListener('resize', () => {
-      // only process resize event each 0.066 sec (about 15 fts)
-      if (!this.timeout) {
-        this.timeout = window.setTimeout(() => {
-          this.timeout = null
-          this.setContainerHeight()
-        }, 66)
-      }
-    })
     // setup after 1 sec
     window.setTimeout(this.setup, 1000)
   },
@@ -240,7 +229,6 @@ export default {
   data () {
     return {
       signIn: true,
-      containerHeight: 400,
       // data for toolbox
       toolboxOptions: {
         iconModule: iconModule,
@@ -297,9 +285,6 @@ export default {
     }
   },
   computed: {
-    containerStyle () {
-      return { 'height': `${this.containerHeight}px` }
-    },
     undoDisabled () {
       return this.currentVersionNo === 0
     },
@@ -329,9 +314,6 @@ export default {
     },
     hideSnackbar () {
       this.$refs.snackbar.close()
-    },
-    setContainerHeight () {
-      this.containerHeight = window.innerHeight - 60
     },
     // method for drag over in tree
     dragOverRule (dest, source) {
@@ -727,10 +709,11 @@ export default {
 <style scoped>
   .json-schema-editor {
     font-size: 12px;
+    height: 100%;
   }
 
   .container {
-    /*height: 600px;*/
+    height: 100%;
     border: solid 1px black;
     font-size: 12px;
   }
