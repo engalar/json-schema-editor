@@ -299,6 +299,21 @@ export default {
     async setup () {
         // init tree data
         this.newSchemaConfirmed(true)
+        window.getSchema = () => {
+          let schemaTree = this.$refs.tree.root
+          let schema = convertTreeToSchema(schemaTree)
+          return schema;
+        }
+        window.setSchema = (schema) => {
+          let schemaTree = this.$refs.tree.root
+          let treeData = convertSchemaToTree(schema)
+          // add schema name into schema list
+          if (this.schemaList.indexOf(schemaTree.name) === -1) this.schemaList.push(schemaTree.name)
+          // add or update user schema
+          this.$refs.userSchemas.append(treeData)
+          this.setTree(treeData)
+        }
+
     },
     confirmClosed (result) {
       if (typeof this.confirm.callback === 'function') {
@@ -513,7 +528,6 @@ export default {
     async saveSchema () {
       // check for existence of schema
       let schemaTree = this.$refs.tree.root
-      const a = convertTreeToSchema(schemaTree);
       let isExist = false
       try {
         await this.repository.retrieveSchema(schemaTree.name, false)
