@@ -170,7 +170,6 @@ import iconModule from './icon-module'
 import {
   convertTreeToSchema,
   convertSchemaToTree,
-  authentication,
   repository,
   componentData,
   treeData,
@@ -220,7 +219,6 @@ var clipboard = {}
 export default {
   name: 'JsonSchemaEditor',
   created () {
-    this.repository = repository
     this.setContainerHeight()
     // register window resize event handler
     window.addEventListener('resize', () => {
@@ -242,7 +240,6 @@ export default {
   data () {
     return {
       signIn: true,
-      repository: null,
       containerHeight: 400,
       // data for toolbox
       toolboxOptions: {
@@ -315,56 +312,8 @@ export default {
   },
   methods: {
     async setup () {
-      // retrieve current user
-      try {
-        await authentication.retrieveCurrentUser()
-      } catch (err) {
-      }
-      if (authentication.currentUser === null) {
-        this.signIn = false
-        this.$nextTick(() => {
-          this.alert.title = 'User not sign in'
-          this.alert.content = 'User can not retrieve and store custom schema, please sign in to access these features.'
-          this.$refs.alert.open()
-        })
-      }
-      if (this.signIn) {
-        // display loading notification
-        this.showSnackbar('Loading custom schemas', 90000, true)
-        await this.repository.init()
-        // retrieve types
-        try {
-          this.schemaList = await this.repository.retrieveTypes()
-        } catch (err) {
-          console.log(`Retrieve types error: ${err.message}`)
-          this.showSnackbar(`Retrieve custom schema types error: ${err.message}`, 4000)
-        }
-        // retrieve all user schemas and init user schemas toolbox
-        try {
-          let schemaList = await this.repository.retrieveAllSchemas()
-          schemaList.forEach(schema => {
-            let tree = convertSchemaToTree(schema, schema.schemaName)
-            this.$refs.userSchemas.append(tree)
-          })
-        } catch (err) {
-          console.log(`Retrieve all schemas error: ${err.message}`)
-          this.showSnackbar(`Retrieve custom schemas error: ${err.message}`, 4000)
-        }
-        // init tree data
-        if (this.$route.query.schema) {
-          let loadOk = await this.loadSchemaConfirmed(true, this.$route.query.schema)
-          if (!loadOk) {
-            this.newSchemaConfirmed(true)
-          }
-        } else {
-          this.newSchemaConfirmed(true)
-        }
-        // close loading notification
-        this.$refs.snackbar.close()
-      } else {
         // init tree data
         this.newSchemaConfirmed(true)
-      }
     },
     confirmClosed (result) {
       if (typeof this.confirm.callback === 'function') {
@@ -582,6 +531,7 @@ export default {
     async saveSchema () {
       // check for existence of schema
       let schemaTree = this.$refs.tree.root
+      const a = convertTreeToSchema(schemaTree);
       let isExist = false
       try {
         await this.repository.retrieveSchema(schemaTree.name, false)

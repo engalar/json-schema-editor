@@ -1,5 +1,3 @@
-import * as firebase from 'firebase'
-import { Database, UserNotSignInError } from '../../firebase'
 import $RefParser from 'json-schema-ref-parser'
 
 // define custom error for repository has not initialized
@@ -51,7 +49,6 @@ function DecodeSchema (schema) {
 export class Repository {
   constructor () {
     this.database = new Database()
-    this.uid = null
     // firebase resolver for json-schema-ref-parser
     this.firebaseResolver = {
       order: 1,
@@ -64,14 +61,6 @@ export class Repository {
   }
 
   async init () {
-    return new Promise((resolve, reject) => {
-      if (firebase.auth().currentUser) {
-        this.uid = firebase.auth().currentUser.uid
-        resolve()
-      } else {
-        reject(new UserNotSignInError())
-      }
-    })
   }
 
   async retrieveSchema (schemaName, dereference) {

@@ -1,6 +1,5 @@
 export { convertTreeToSchema } from './convertTreeToSchema'
 export { convertSchemaToTree } from './convertSchemaToTree'
-export { authentication } from '../../firebase'
 export { repository } from './repository-firebase'
 export { componentData } from './componentData'
 export { treeData } from './treeData'
